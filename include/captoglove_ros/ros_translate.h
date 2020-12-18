@@ -3,11 +3,11 @@
 #include <signal.h>
 #include <string.h>
 
-#include "captogloveapi.h";
+#include "captogloveapi.h"
 
-#include <captoglove_ros_msgs/FingerFeedbackMsg>
-#include <captoglove_ros_msgs/BatteryLevelMsg>
-#include <captoglove_ros_msgs/DeviceInformationMsg>
+#include <captoglove_ros_msgs/FingerFeedbackMsg.h>
+#include <captoglove_ros_msgs/BatteryLevelMsg.h>
+#include <captoglove_ros_msgs/DeviceInformationMsg.h>
 
 namespace captoglove_ros{
 
