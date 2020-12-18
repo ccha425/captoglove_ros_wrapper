@@ -1,0 +1,16 @@
+<launch>
+
+<arg name="namespace" default="captoglove1"/>
+
+<group ns="$(arg namespace)">
+   <node pkg="captoglove_ros_wrapper" name="captoglove_ros_wrapper_node" type="captoglove_ros_wrapper_node" output="screen"
+        args=" ">
+   </node>
+
+</group>
+
+
+</launch>
+
+
+
