@@ -3,6 +3,12 @@
 #include <signal.h>
 #include <string.h>
 
+#include "captogloveapi.h";
+
+#include <captoglove_ros_msgs/FingerFeedbackMsg>
+#include <captoglove_ros_msgs/BatteryLevelMsg>
+#include <captoglove_ros_msgs/DeviceInformationMsg>
+
 namespace captoglove_ros{
 
 class ros_translate: public QObject
