@@ -11,7 +11,7 @@
 
 namespace captoglove_ros{
 
-class ros_translate: public QObject
+    class ros_translate: public QObject
 {
     Q_OBJECT
 public:

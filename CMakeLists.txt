@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(captoglove_ros_wrapper)
+
 set(CMAKE_BUILD_TYPE Debug)
 
 # Set CaptoGloveAPI (sources and library)
 set(CAPTOGLOVEAPI_INCLUDE_DIR $ENV{CAPTOGLOVEAPI_SRC_PATH})
 message(STATUS "CAPTOGLOVEAPI SRC PATH: " ${CAPTOGLOVEAPI_INCLUDE_DIR})
-set(CAPTOGLOVEAPI_LIBRARY $ENV{CAPTOGLOVEAPI_LIBRARY_PATH})
+set(CAPTOGLOVEAPI_LIBRARY_DIR $ENV{CAPTOGLOVEAPI_LIBRARY_PATH})
 message(STATUS "CAPTOGLOVEAPI LIBRARY PATH: " ${CAPTOGLOVEAPI_LIBRARY_DIR})
+
+find_library(CAPTOGLOVEAPI_LIBRARY CaptoGloveAPI ${CAPTOGLOVEAPI_LIBRARY_DIR})
+message (STATUS "CAPTOGLOVEAPI LIBRARY: " ${CAPTOGLOVEAPI_LIBRARY})
+message (STATUS "CAPTOGLOVEAPI INCLUDE DIR:" ${CAPTOGLOVEAPI_INCLUDE_DIR})
 
 find_package(catkin REQUIRED COMPONENTS
     roscpp
@@ -33,7 +38,7 @@ message(STATUS "PROTOBUF INCLUDE DIR: " ${PROTOBUF_INCLUDE_DIR})
 
 catkin_package(    
     INCLUDE_DIRS src include ${CAPTOGLOVEAPI_INCLUDE_DIR}
-    LIBRARIES ${CAPTOGLOVEAPI_LIBRARY_DIR} ${PROTOBUF_LIBRARY}
+    LIBRARIES ${CAPTOGLOVEAPI_LIBRARY} ${PROTOBUF_LIBRARY}
     CATKIN_DEPENDS message_runtime roscpp rospy std_msgs captoglove_ros_msgs
     DEPENDS)
 
@@ -56,7 +61,7 @@ add_library(captoglove_ros_wrapper src/captoglove_ros.cpp src/ros_translate.cpp 
 target_link_libraries(
     captoglove_ros_wrapper
     ${catkin_LIBRARIES}   
-    ${CAPTOGLOVEAPI_LIBRARY_DIR})
+    ${CAPTOGLOVEAPI_LIBRARY})
 
 qt5_use_modules(captoglove_ros_wrapper Core Bluetooth Network)
 
@@ -65,7 +70,7 @@ add_executable(captoglove_ros_wrapper_node src/main.cpp ${captoglove_ros_wrapper
 target_link_libraries(captoglove_ros_wrapper_node
     captoglove_ros_wrapper
     ${catkin_LIBRARIES} 
-    ${CAPTOGLOVEAPI_LIBRARY_DIR}
+    ${CAPTOGLOVEAPI_LIBRARY}
     ${PROTOBUF_LIBRARIES})
 
 add_dependencies(captoglove_ros_wrapper_node ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
