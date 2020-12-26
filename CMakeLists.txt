@@ -19,8 +19,9 @@ find_package(catkin REQUIRED COMPONENTS
     roslib
     cmake_modules
     std_msgs
-    qt_build
-    captoglove_ros_msgs)
+    sensor_msgs
+    message_generation
+    qt_build)
 
 find_package(Qt5 REQUIRED COMPONENTS
          SerialPort
@@ -36,14 +37,27 @@ find_package(Protobuf REQUIRED)
 message(STATUS "PROTOBUF LIBRARY: " ${PROTOBUF_LIBRARY})
 message(STATUS "PROTOBUF INCLUDE DIR: " ${PROTOBUF_INCLUDE_DIR})
 
+add_message_files(
+        FILES
+        FingerFeedbackMsg.msg
+        BatteryLevelMsg.msg
+        DeviceInformationMsg.msg
+)
+
+generate_messages(
+        DEPENDENCIES
+        std_msgs
+)
+
 catkin_package(    
-    INCLUDE_DIRS src include ${CAPTOGLOVEAPI_INCLUDE_DIR}
+    INCLUDE_DIRS src include msg ${CAPTOGLOVEAPI_INCLUDE_DIR}
     LIBRARIES ${CAPTOGLOVEAPI_LIBRARY} ${PROTOBUF_LIBRARY}
     CATKIN_DEPENDS message_runtime roscpp rospy std_msgs captoglove_ros_msgs
     DEPENDS)
 
 include_directories(
     include
+    msg
     ${catkin_INCLUDE_DIRS}
     ${CAPTOGLOVEAPI_INCLUDE_DIR}
     ${CAPTOGLOVEAPI_INCLUDE_DIR}/proto_impl
@@ -74,3 +88,4 @@ target_link_libraries(captoglove_ros_wrapper_node
     ${PROTOBUF_LIBRARIES})
 
 add_dependencies(captoglove_ros_wrapper_node ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
+
