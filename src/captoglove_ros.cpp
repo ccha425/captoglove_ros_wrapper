@@ -34,10 +34,10 @@ captoglove_ros::captoglove_ros(int argc, char** argv){
         publishROSErrorToTerminal("No config path set. Using default values.");
     }
 
+    publishROSInfoToTerminal("Starting CaptoGloveAPI!");
 
     m_captogloveAPI = new CaptoGloveAPI(this, configFilePath);
 
-    sleep(5);
 
     if(!this->init()){
         publishROSErrorToTerminal("Master not found. Please restart node.");
@@ -67,26 +67,54 @@ void captoglove_ros::shutdownHandler(int signum){
 }
 
 bool captoglove_ros::init(){
-    std::cout << "Entered initialization!";
 
+    publishROSInfoToTerminal("Entered initialization!");
+
+
+    // ros::init(<command line or remmaping arguments>, std::string node_name, uint32_t options
     ros::init(m_init_argc, m_init_argv, "captoglove_ros", ros::init_options::NoSigintHandler);
+
+    publishROSInfoToTerminal("1");
 
     if (! ros::master::check()){
         return false;
     }
 
+
+
     ros::start();
     ros::NodeHandle nh("/");
     ros::NodeHandle pn("~");
 
+
+
     signal(SIGINT, captoglove_ros::shutdownHandler);
 
+    publishROSInfoToTerminal("3");
+
+
+    // TODO:: Add while not initialized / Check CaptoGlove initialization status
+    // TODO:: Compare with systemprocess_controller architecture and how does getFingers work
+
+    while (!m_captogloveAPI->getInit())
+    {
+        publishROSInfoToTerminal("Waiting for CaptoGloveAPI initialization...");
+        sleep(1);
+
+    }
     if (m_captogloveAPI->getFingers()){
         connect(m_captogloveAPI, SIGNAL(updateFingerState(captoglove_v1::FingerFeedbackMsg)),
                 SLOT(on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg)));
 
         m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_wrapper::FingerFeedbackMsg>("glove/fingers/state", 10);
+    }else{
+        publishROSInfoToTerminal("Failed to get fingers from captoglove!");
     }
+
+    publishROSInfoToTerminal("4");
+
+
+    publishROSInfoToTerminal("Exiting initialization!");
 
     return true;
 
