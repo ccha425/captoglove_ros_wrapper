@@ -44,17 +44,14 @@ captoglove_ros::captoglove_ros(int argc, char** argv){
         QCoreApplication::exit();
         return;
     }else{
-        std::cout << "Succesfully initialized program!";
+        publishROSInfoToTerminal("Started CaptoGloveAPI!");
     }
 
-    publishROSInfoToTerminal("Master found. Starting node");
 
-    //this->start();
+    this->start();
 
 
-    m_captogloveAPI->run();
 
-    std::cout << "Started API!";
 }
 
 captoglove_ros::~captoglove_ros(){
@@ -74,12 +71,9 @@ bool captoglove_ros::init(){
     // ros::init(<command line or remmaping arguments>, std::string node_name, uint32_t options
     ros::init(m_init_argc, m_init_argv, "captoglove_ros", ros::init_options::NoSigintHandler);
 
-    publishROSInfoToTerminal("1");
-
     if (! ros::master::check()){
         return false;
     }
-
 
 
     ros::start();
@@ -87,19 +81,23 @@ bool captoglove_ros::init(){
     ros::NodeHandle pn("~");
 
 
-
     signal(SIGINT, captoglove_ros::shutdownHandler);
 
-    publishROSInfoToTerminal("3");
+    m_captogloveAPI->run();
 
 
     // TODO:: Add while not initialized / Check CaptoGlove initialization status
     // TODO:: Compare with systemprocess_controller architecture and how does getFingers work
 
-    while (!m_captogloveAPI->getInit())
+    /*while (!m_captogloveAPI->getInit())
     {
         publishROSInfoToTerminal("Waiting for CaptoGloveAPI initialization...");
         sleep(1);
+        if (m_captogloveAPI->getInit()){
+            break;
+        }else {
+            publishROSInfoToTerminal("Still boolean negative!");
+        }
 
     }
     if (m_captogloveAPI->getFingers()){
@@ -111,8 +109,7 @@ bool captoglove_ros::init(){
         publishROSInfoToTerminal("Failed to get fingers from captoglove!");
     }
 
-    publishROSInfoToTerminal("4");
-
+*/
 
     publishROSInfoToTerminal("Exiting initialization!");
 
@@ -125,6 +122,8 @@ void captoglove_ros::run(){
     ros::Rate r(100);
 
     ros::Duration(1).sleep();
+
+    publishROSInfoToTerminal("Entered run loop!");
 
     while(!m_request_shutdown){
         ros::spinOnce();
