@@ -3,16 +3,15 @@
 <arg name="right_glove_ns" default="captoglove_right"/>
 <arg name="left_glove_ns" default="captoglove_left"/>
 
-<?ignore
 <group ns="$(arg left_glove_ns)">
    <node pkg="captoglove_ros_wrapper" name="captoglove_left_node" type="captoglove_ros_wrapper_node" output="screen"
         args="-c $(find captoglove_ros_wrapper)/include/config_left.ini">
    </node>
 
 </group>
-?>
 
 
+<?ignore
 <group ns="$(arg right_glove_ns)">
 
    <node pkg="captoglove_ros_wrapper" name="captoglove_right_node" type="captoglove_ros_wrapper_node" output="screen"
@@ -20,7 +19,7 @@
    </node> 
 
 </group> 
-
+?>
 
 </launch>
 

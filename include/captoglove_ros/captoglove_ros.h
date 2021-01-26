@@ -18,8 +18,6 @@
 #include "ros_translate.h"
 
 
-
-
 namespace captoglove_ros{
 
 class captoglove_ros : public QThread
@@ -49,11 +47,8 @@ private slots:
         //void publishToROS                               (ros_translate::LogType type, QString Text);
 
         void on_fingerStatesUpdated                     (captoglove_v1::FingerFeedbackMsg);
-
-
-
-
-
+        void on_batteryLevelUpdated                     (captoglove_v1::BatteryLevelMsg);
+        //void on_deviceInfoUpdated                       (captoglove_v1::DeviceInformationMsg);
 
 private:
 
@@ -66,7 +61,7 @@ private:
         // Publishers
         ros::Publisher m_fingerFeedback_Publisher;
         ros::Publisher m_batteryLevel_Publisher;
-        ros::Publisher m_DeviceInfo_Publisher;
+        ros::Publisher m_deviceInfo_Publisher;
 
 
         };

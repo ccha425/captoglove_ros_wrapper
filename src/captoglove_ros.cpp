@@ -80,6 +80,8 @@ bool captoglove_ros::init(){
     ros::NodeHandle nh("/");
     ros::NodeHandle pn("~");
 
+    std::string ns = ros::this_node::getNamespace();
+
 
     signal(SIGINT, captoglove_ros::shutdownHandler);
 
@@ -101,15 +103,19 @@ bool captoglove_ros::init(){
 
     }
     if (m_captogloveAPI->getFingers()){
-        connect(m_captogloveAPI, SIGNAL(updateFingerState(captoglove_v1::FingerFeedbackMsg)),
-                SLOT(on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg)));
 
-        m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_wrapper::FingerFeedbackMsg>("glove/fingers/state", 10);
-    }else{
-        publishROSInfoToTerminal("Failed to get fingers from captoglove!");
-    }
 
-*/
+    */
+
+    // TODO: Implement battery feedback and finger feedback to publishers
+    connect(m_captogloveAPI, SIGNAL(updateBatteryState(captoglove_v1::BatteryLevelMsg)),
+           SLOT(on_batteryStatesUpdated(captoglove_v1::BatteryLevelMsg)));
+
+    connect(m_captogloveAPI, SIGNAL(updateFingerState(captoglove_v1::FingerFeedbackMsg)),
+            SLOT(on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg)));
+
+    m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_wrapper::FingerFeedbackMsg>(ns + "/fingers/state", 10);
+    m_batteryLevel_Publisher = nh.advertise<sensor_msgs::BatteryState>(ns + "/battery/status", 10);
 
     publishROSInfoToTerminal("Exiting initialization!");
 
@@ -119,9 +125,10 @@ bool captoglove_ros::init(){
 
 void captoglove_ros::run(){
     int i = 0;
-    ros::Rate r(100);
+    ros::Rate r(50);
 
-    ros::Duration(1).sleep();
+
+    ros::Duration(5).sleep();
 
     publishROSInfoToTerminal("Entered run loop!");
 
@@ -147,6 +154,15 @@ void captoglove_ros::run(){
 void captoglove_ros::on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg msg){
     m_fingerFeedback_Publisher.publish(ros_translate::FingerFeedbackMsg_PB2ROS(msg));
 }
+
+
+void captoglove_ros::on_batteryLevelUpdated(captoglove_v1::BatteryLevelMsg msg){
+    m_batteryLevel_Publisher.publish(ros_translate::BatteryLevelMsg_PB2ROS(msg));
+}
+
+//void captoglove_ros::on_deviceInfoUpdated(captoglove_v1::DeviceinformationMsg msg){
+//    m_deviceInformation_Publisher.publish(ros_translate::DeviceInformationMsg_PB2ROS(msg));
+//}
 
 void captoglove_ros::publishROSInfoToTerminal(QString info){
     QString Text = QString("%1 [INFO]" + info).arg(QDateTime::currentDateTime().toString("hh:mm:ss.zzz"));
