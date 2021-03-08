@@ -5,7 +5,7 @@
 
 #include "captogloveapi.h"
 
-#include <captoglove_ros_wrapper/FingerFeedbackMsg.h>
+#include <captoglove_ros_msgs/FingerFeedbackMsg.h>
 #include <captoglove_ros_wrapper/BatteryLevelMsg.h>
 #include <captoglove_ros_wrapper/DeviceInformationMsg.h>
 
@@ -26,7 +26,7 @@ public:
         log_fatal = 4
     } LogType;
 
-    static captoglove_ros_wrapper::FingerFeedbackMsg              FingerFeedbackMsg_PB2ROS           (captoglove_v1::FingerFeedbackMsg);
+    static captoglove_ros_msgs::FingerFeedbackMsg              FingerFeedbackMsg_PB2ROS           (captoglove_v1::FingerFeedbackMsg);
     static captoglove_ros_wrapper::BatteryLevelMsg                BatteryLevelMsg_PB2ROS             (captoglove_v1::BatteryLevelMsg);
     static captoglove_ros_wrapper::DeviceInformationMsg           DeviceInformationMsg_PB2ROS        (captoglove_v1::DeviceInformationMsg);
 

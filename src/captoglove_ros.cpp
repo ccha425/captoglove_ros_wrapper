@@ -114,7 +114,7 @@ bool captoglove_ros::init(){
     connect(m_captogloveAPI, SIGNAL(updateFingerState(captoglove_v1::FingerFeedbackMsg)),
             SLOT(on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg)));
 
-    m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_wrapper::FingerFeedbackMsg>(ns + "/fingers/state", 10);
+    m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_msgs::FingerFeedbackMsg>(ns + "/fingers/state", 10);
     m_batteryLevel_Publisher = nh.advertise<sensor_msgs::BatteryState>(ns + "/battery/status", 10);
 
     publishROSInfoToTerminal("Exiting initialization!");

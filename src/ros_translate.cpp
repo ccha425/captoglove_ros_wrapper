@@ -13,9 +13,9 @@ namespace captoglove_ros {
     }
 
 // Fingers
-    captoglove_ros_wrapper::FingerFeedbackMsg ros_translate::FingerFeedbackMsg_PB2ROS(captoglove_v1::FingerFeedbackMsg pb_msg) {
+    captoglove_ros_msgs::FingerFeedbackMsg ros_translate::FingerFeedbackMsg_PB2ROS(captoglove_v1::FingerFeedbackMsg pb_msg) {
 
-        captoglove_ros_wrapper::FingerFeedbackMsg ros_msg;
+        captoglove_ros_msgs::FingerFeedbackMsg ros_msg;
 
         ros_msg.ThumbFinger = pb_msg.thumb_finger();
         ros_msg.IndexFinger = pb_msg.index_finger();
