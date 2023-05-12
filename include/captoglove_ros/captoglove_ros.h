@@ -16,7 +16,7 @@
 #include <stdio.h>
 
 #include "ros_translate.h"
-
+#include "std_msgs/Float32MultiArray.h"
 
 namespace captoglove_ros{
 
@@ -62,8 +62,8 @@ private:
         ros::Publisher m_fingerFeedback_Publisher;
         ros::Publisher m_batteryLevel_Publisher;
         ros::Publisher m_deviceInfo_Publisher;
-
-
+        ros::Publisher pub_hand;
+        
         };
 
 }

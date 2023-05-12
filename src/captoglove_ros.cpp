@@ -1,6 +1,8 @@
 #include <captoglove_ros/captoglove_ros.h>
 #include <signal.h>
 #include <iostream>
+#include "ros/ros.h"
+#include "std_msgs/String.h"
 
 namespace captoglove_ros{
 
@@ -30,6 +32,7 @@ captoglove_ros::captoglove_ros(int argc, char** argv){
 
     if (parser.isSet("c")){
         configFilePath = parser.values("c").at(0);
+
     }else{
         publishROSErrorToTerminal("No config path set. Using default values.");
     }
@@ -46,12 +49,7 @@ captoglove_ros::captoglove_ros(int argc, char** argv){
     }else{
         publishROSInfoToTerminal("Started CaptoGloveAPI!");
     }
-
-
     this->start();
-
-
-
 }
 
 captoglove_ros::~captoglove_ros(){
@@ -78,7 +76,9 @@ bool captoglove_ros::init(){
 
     ros::start();
     ros::NodeHandle nh("/");
-    ros::NodeHandle pn("~");
+    //ros::NodeHandle pn("~");
+    
+    
 
     std::string ns = ros::this_node::getNamespace();
 
@@ -108,15 +108,16 @@ bool captoglove_ros::init(){
     */
 
     // TODO: Implement battery feedback and finger feedback to publishers
+
     connect(m_captogloveAPI, SIGNAL(updateBatteryState(captoglove_v1::BatteryLevelMsg)),
-           SLOT(on_batteryStatesUpdated(captoglove_v1::BatteryLevelMsg)));
+           SLOT(on_batteryLevelUpdated(captoglove_v1::BatteryLevelMsg)));
 
     connect(m_captogloveAPI, SIGNAL(updateFingerState(captoglove_v1::FingerFeedbackMsg)),
             SLOT(on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg)));
 
-    m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_msgs::FingerFeedbackMsg>(ns + "/fingers/state", 10);
+    m_fingerFeedback_Publisher = nh.advertise<captoglove_ros_msgs::FingerFeedbackMsg>(ns + "/fingers/states", 10);
     m_batteryLevel_Publisher = nh.advertise<sensor_msgs::BatteryState>(ns + "/battery/status", 10);
-
+    pub_hand = nh.advertise<std_msgs::Float32MultiArray>(ns + "/servo", 10);
     publishROSInfoToTerminal("Exiting initialization!");
 
     return true;
@@ -152,7 +153,11 @@ void captoglove_ros::run(){
 }
 
 void captoglove_ros::on_fingerStatesUpdated(captoglove_v1::FingerFeedbackMsg msg){
+    // printf("on_fingerstateupdated1 \n");
     m_fingerFeedback_Publisher.publish(ros_translate::FingerFeedbackMsg_PB2ROS(msg));
+    pub_hand.publish(ros_translate::FingerFeedbackMsg_ROS2HAND(msg));
+    // ROS_INFO("%d\n", ros_translate::FingerFeedbackMsg_PB2ROS(msg).ThumbFinger);
+    // printf("end_on_fingerstateupdated \n");
 }
 
 
